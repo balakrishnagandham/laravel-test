@@ -1,0 +1,25 @@
+version: 0.0
+os: linux
+files:
+  - source: index.nginx-debian.html
+    destination: /var/www/html/index.nginx-debian.html
+#  - source: source
+#    destination: /webapps/myApp
+hooks:
+  BeforeInstall:
+    - location: scripts/install_composer_dependencies.sh
+    - location: scripts/link_node_packages.sh
+    - location: scripts/artisan_db_migrate.sh
+      timeout: 360
+  AfterInstall:
+    - location: scripts/config_cache.sh
+    - location: scripts/route_and_view_cache.sh
+      timeout: 300
+  ApplicationStart:
+    - location: scripts/activate_new_release.sh
+    - location: scripts/restart_queue.sh
+    - location: scripts/purge_old_releases.sh
+      timeout: 360
+  ValidateService:
+    - location: scripts/show_refresh_banner.sh
+      timeout: 180
