@@ -4,13 +4,13 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/php
 ###
 trigger:
-- 10.x
+- azure-pipelines
 
 pool:
-  vmImage: ubuntu-latest
+  name: bala-ec2-agent-pool
 
 variables:
-  phpVersion: 7.2
+  phpVersion: 8.1
 
 steps:
 - script: |
