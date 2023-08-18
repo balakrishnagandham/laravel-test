@@ -23,12 +23,21 @@ steps:
       **/*
       !.git/**/*
     TargetFolder: '/var/nava360/dashboard/latest_$(Build.BuildNumber)'
-- script: |
-    cd /var/nava360/dashboard/latest_'$(Build.BuildNumber)'
-    echo 'Current wokring directory: '; pwd
-    #composer install --no-interaction --prefer-dist
-    composer install
+- task: Bash@3
   displayName: 'composer install'
+  inputs:
+   targetType: 'inline'
+   script: |
+     #composer install --no-interaction --prefer-dist
+     composer install
+   failOnStderr: true
+   workingDirectory: "/var/nava360/dashboard/latest_$(Build.BuildNumber)"
+# - script: |
+#     cd /var/nava360/dashboard/latest_'$(Build.BuildNumber)'
+#     echo 'Current wokring directory: '; pwd
+#     #composer install --no-interaction --prefer-dist
+#     composer install
+#   displayName: 'composer install'
 - script: |
     cd /var/nava360/dashboard/latest_'$(Build.BuildNumber)'
     echo 'Current wokring directory: '; pwd
@@ -68,4 +77,7 @@ steps:
     echo 'Current wokring directory: '; pwd
     #php artisan deploy:show-banner
   displayName: 'Show Refresh banner'
+
+
+
 
