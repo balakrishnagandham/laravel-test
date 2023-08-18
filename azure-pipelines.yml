@@ -3,6 +3,10 @@
 # Add steps that run tests, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/php
 ###
+variables:
+- name: release
+  value: initialValue 
+  
 trigger:
 - azure-pipelines
 
@@ -14,13 +18,17 @@ variables:
 
 steps:
 - script: |
-    sudo update-alternatives --set php /usr/bin/php$(phpVersion)
-    sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
-    sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
-    sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
-    sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
-    php -version
-  displayName: 'Use PHP version $(phpVersion)'
-
-- script: composer install --no-interaction --prefer-dist
-  displayName: 'composer install'
+    timestamp=$(date +%Y%m%d_%H%M%S)
+    release='$(Agent.HomeDirectory)_$(timestamp)'
+    echo '$release'
+  displayName: 'release floder name'
+  
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: |
+      **/*
+      !.git/**/*
+    TargetFolder: '$(Agent.HomeDirectory)/dashboard/latest'
+    
