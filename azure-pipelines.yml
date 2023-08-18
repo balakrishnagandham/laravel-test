@@ -27,5 +27,5 @@ steps:
     Contents: |
       **/*
       !.git/**/*
-    TargetFolder: '$(Agent.BuildDirectory)/dashboard/latest'
+    TargetFolder: '/var/nava360/dashboard/latest_$(date +%Y%m%d_%H%M%S)'
     
