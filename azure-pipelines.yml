@@ -1,9 +1,9 @@
+
 # PHP
 # Test and package your PHP project.
 # Add steps that run tests, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/php
-###
-  
+### 
 trigger:
 - azure-pipelines
 
@@ -15,7 +15,7 @@ variables:
 
 steps:  
 - task: CopyFiles@2
-  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  displayName: 'Move latest code'
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)'
     Contents: |
@@ -24,7 +24,45 @@ steps:
     TargetFolder: '/var/nava360/dashboard/latest_$(Build.BuildNumber)'
 - script: |
     cd /var/nava360/dashboard/latest_'$(Build.BuildNumber)'
-    pwd
+    current_directory=`pwd`
+    echo 'Current wokring directory: $(current_directory)'
     composer install --no-interaction --prefer-dist
   displayName: 'composer install'
-    
+- script: |
+    cd /var/nava360/dashboard/latest_'$(Build.BuildNumber)'
+    current_directory=`pwd`
+    php artisan migrate --path=database/migrations/landlord --database=landlord --force
+    php artisan tenants:artisan "migrate --path=database/migrations/tenant --database=tenant --force"
+  displayName: 'Artisan Migrate'
+- script: |
+    cd /var/nava360/dashboard/latest_'$(Build.BuildNumber)/nodejs'
+    current_directory=`pwd`
+    npm link ioredis socket.io node-env-file
+  displayName: 'Link Node Packages'
+- script: |
+    cd /var/nava360/dashboard/latest_'$(Build.BuildNumber)'
+    current_directory=`pwd`
+    php artisan config:cache
+    php artisan translations:cache
+  displayName: 'Config cache'
+- script: |
+    cd /var/nava360/dashboard/latest_'$(Build.BuildNumber)'
+    current_directory=`pwd`
+    php artisan route:cache
+    php artisan view:cache
+  displayName: 'Route & View Cache'
+- script: |
+    cd /var/nava360/dashboard/
+    current_directory=`pwd`
+    ln -sf latest_'$(Build.BuildNumber)' current
+  displayName: 'Activate New Release'
+- script: |
+    cd /var/nava360/dashboard/latest_'$(Build.BuildNumber)'
+    current_directory=`pwd`
+    sudo php artisan horizon:terminate
+  displayName: 'Restart Queue'
+- script: |
+    cd /var/nava360/dashboard/latest_'$(Build.BuildNumber)'
+    current_directory=`pwd`
+    php artisan deploy:show-banner
+  displayName: 'Show Refresh banner'
