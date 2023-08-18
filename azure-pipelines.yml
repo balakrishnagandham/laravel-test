@@ -27,5 +27,5 @@ steps:
     Contents: |
       **/*
       !.git/**/*
-    TargetFolder: '$(Agent.HomeDirectory)/dashboard/latest'
+    TargetFolder: '$(Agent.BuildDirectory)/dashboard/latest'
     
