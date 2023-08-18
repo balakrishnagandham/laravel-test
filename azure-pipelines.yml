@@ -10,6 +10,8 @@ trigger:
 
 pool:
   name: bala-ec2-agent-pool
+strategy:
+  parallel: 2
 
 variables:
   phpVersion: 8.1
