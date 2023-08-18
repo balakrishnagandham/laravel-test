@@ -27,6 +27,7 @@ steps:
     cd /var/nava360/dashboard/latest_'$(Build.BuildNumber)'
     echo 'Current wokring directory: '; pwd
     #composer install --no-interaction --prefer-dist
+    composer install
   displayName: 'composer install'
 - script: |
     cd /var/nava360/dashboard/latest_'$(Build.BuildNumber)'
@@ -65,8 +66,6 @@ steps:
 - script: |
     cd /var/nava360/dashboard/latest_'$(Build.BuildNumber)'
     echo 'Current wokring directory: '; pwd
-    php artisan deploy:show-banner
+    #php artisan deploy:show-banner
   displayName: 'Show Refresh banner'
-
-
 
