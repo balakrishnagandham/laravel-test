@@ -22,4 +22,9 @@ steps:
       **/*
       !.git/**/*
     TargetFolder: '/var/nava360/dashboard/latest_$(Build.BuildNumber)'
+- script: |
+    cd /var/nava360/dashboard/latest_'$(Build.BuildNumber)'
+    pwd
+    composer install --no-interaction --prefer-dist
+  displayName: 'composer install'
     
