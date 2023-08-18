@@ -17,7 +17,7 @@ steps:
 - script: |
     timestamp=$(date +%Y%m%d_%H%M%S)
     release='$(Agent.HomeDirectory)_$(timestamp)'
-    echo '$release'
+    echo '$(release)'
   displayName: 'release floder name'
   
 - task: CopyFiles@2
@@ -27,5 +27,5 @@ steps:
     Contents: |
       **/*
       !.git/**/*
-    TargetFolder: '/var/nava360/dashboard/latest_$(date +%Y%m%d_%H%M%S)'
+    TargetFolder: '/var/nava360/dashboard/latest_$(Build.BuildNumber)'
     
